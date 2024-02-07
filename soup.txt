@@ -1,0 +1,16 @@
+<div class="el-row dcf-table-row bg-danger-surface" data-v-012ee7d7="" style="margin-bottom:0px;">
+ <div class="el-col el-col-12" data-v-012ee7d7="">
+  <div class="fs-x-large fw-bolder" data-v-012ee7d7="">
+   Margin of Safety
+  </div>
+ </div>
+ <div class="fs-x-large fw-bolder text-right el-col el-col-12" data-v-012ee7d7="">
+  <span class="dcf-result" data-v-012ee7d7="">
+   <span style="color:red">
+    <i class="gf-icon-unuseful dark-mode-no-invert">
+    </i>
+    -68.85%
+   </span>
+  </span>
+ </div>
+</div>
