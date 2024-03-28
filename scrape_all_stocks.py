@@ -28,23 +28,27 @@ def scrape_data(driver, ticker: str):
 
     # Wait for the page to load sufficiently
     try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'dcf-result')))
+        print(f"trying... {ticker}")
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'dcf-result')))
+        print("done waiting, got past webdriverwait")
     except TimeoutException:
-        print("Timed out waiting for the page to load or the element to appear.")
+        print(f"Timed out waiting for the page for {ticker} to load.")
         # Optionally, take a screenshot or dump the page source to help with debugging.
-        driver.save_screenshot('page_timeout.png')
-        with open('page_source.html', 'w') as f:
-            f.write(driver.page_source)
+        # driver.save_screenshot('page_timeout.png')
+        # with open('page_source.html', 'w') as f:
+        #    f.write(driver.page_source)
         # Handle the exception or re-raise it if you want the script to stop here.
-        return [0, 0, 0]
+        return [-69420, -69420, -69420]
 
+    percentage_text = 'Blank'
     predictability_stars = 0
-    fair_value = 'N/A'
+    fair_value = 0
 
     # Implement a retry mechanism for BeautifulSoup
     attempts = 0
     timed_out = True
     while attempts < 3:
+        attempts += 1
         try:
             soup = BeautifulSoup(driver.page_source, 'html.parser')
 
@@ -87,11 +91,10 @@ def scrape_data(driver, ticker: str):
         else:
             print(f"Retry {attempts + 1} for {ticker}")
             time.sleep(2)  # Wait a bit before retrying
-            attempts += 1
 
     if timed_out:
         print(f"Failed to find margin of safety for {ticker} after {attempts} attempts.")
-        return None  # or a default value, or raise an exception
+        return [percentage_text, predictability_stars, fair_value]
 
     if percentage_text == 'N/A':
         percentage_value = 'N/A'
@@ -102,8 +105,11 @@ def scrape_data(driver, ticker: str):
 
 
 def main():
+    input_file = 'all_stocks_real.xlsx'
+    output_file = 'all_stocks_real.xlsx'
+
     # Load the DataFrame
-    df = pd.read_excel('Russell 2000 DCFs.xlsx', sheet_name='Stocks')
+    df = pd.read_excel(input_file, sheet_name='Stocks')
     # Ensure the DataFrame has the necessary columns
     if 'Margin of Safety' not in df.columns:
         df['Margin of Safety'] = None
@@ -122,7 +128,8 @@ def main():
             if pd.notna(row['Fair Value']):
                 continue
 
-            data = scrape_data(driver, row['Ticker'])
+            data = scrape_data(driver, row['Symbol'])
+            print(data)
             if data:
                 mos = data[0]
                 if mos == 'N/A':
@@ -147,9 +154,11 @@ def main():
     finally:
         driver.quit()
 
-        df.to_excel('Russell 2000 DCFs.xlsx', sheet_name='Stocks', index=False)
+        df.to_excel(output_file, sheet_name='Stocks', index=False)
+        # df.to_excel(f"{output_file[:output_file.rfind(".")]}backup.xlsx", sheet_name='Stocks', index=False)
 
 
 if __name__ == "__main__":
     # main()
     upload()
+    print("scrape_all_stocks file... eli what have you done?")
