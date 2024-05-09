@@ -9,7 +9,6 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 import time
-from google_sheet import upload
 
 
 def create_driver():
@@ -105,8 +104,8 @@ def scrape_data(driver, ticker: str):
 
 
 def main():
-    input_file = 'all_stocks_real.xlsx'
-    output_file = 'all_stocks_real.xlsx'
+    input_file = 'stocks_list.xlsx'
+    output_file = 'stocks_list.xlsx'
 
     # Load the DataFrame
     df = pd.read_excel(input_file, sheet_name='Stocks')
@@ -123,6 +122,9 @@ def main():
 
     processed_count = 0
     try:
+        df['Symbol'] = df['Symbol'].str.replace('/', '.', regex=False)
+        df['Symbol'] = df['Symbol'].str.replace('^', '.', regex=False)
+
         for index, row in df.iterrows():
             # Skip rows that have already been processed
             if pd.notna(row['Fair Value']):
@@ -159,6 +161,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    upload()
-    print("scrape_all_stocks file... eli what have you done?")
+    main()

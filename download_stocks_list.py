@@ -33,7 +33,7 @@ def download_nasdaq_list():
     df = pd.read_csv("stocks_list.csv")
 
     excel_file_path = "stocks_list.xlsx"
-    df.to_excel(excel_file_path, index=False, engine="openpyxl")
+    df.to_excel(excel_file_path, index=False, engine="openpyxl", sheet_name="Stocks")
 
 
 download_nasdaq_list()
