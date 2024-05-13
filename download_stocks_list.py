@@ -1,13 +1,20 @@
 from selenium.webdriver.common.by import By
 import pandas as pd
 import time
-from main import create_driver
+from scrape_all_stocks import create_driver
 import shutil
 import os
 from glob import glob
 
 
-def download_nasdaq_list():
+def download_nasdaq_list(filename: str):
+    """
+    Downloads a full list of stocks (around 7,200 tickers as of 05/2024) from the Nasdaq website.
+    This function creates a .csv file and .xlsx file.
+    :param filename: What to name the list of stocks files (e.g. "stocks_list.csv")
+    :return:
+    """
+
     driver = create_driver()
     driver.get("https://www.nasdaq.com/market-activity/stocks/screener")
     time.sleep(5)
@@ -28,12 +35,9 @@ def download_nasdaq_list():
     latest_file = max(files, key=os.path.getmtime)
 
     # Move the most recently downloaded file to your project directory
-    shutil.move(latest_file, os.path.join(project_directory, "stocks_list.csv"))
+    shutil.move(latest_file, os.path.join(project_directory, f"{filename}.csv"))
 
-    df = pd.read_csv("stocks_list.csv")
+    df = pd.read_csv(f"{filename}.csv")
 
-    excel_file_path = "stocks_list.xlsx"
+    excel_file_path = f"{filename}.xlsx"
     df.to_excel(excel_file_path, index=False, engine="openpyxl", sheet_name="Stocks")
-
-
-download_nasdaq_list()

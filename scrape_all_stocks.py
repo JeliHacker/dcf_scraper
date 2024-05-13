@@ -103,9 +103,13 @@ def scrape_data(driver, ticker: str):
     return [percentage_value, predictability_stars, fair_value]
 
 
-def main():
-    input_file = 'stocks_list.xlsx'
-    output_file = 'stocks_list.xlsx'
+def scrape_all_stocks(input_file):
+    """
+    Writes to the stocks list (which is the input file), adding 3 columns relating to fair value,
+    based on data scraped from Gurufocus.
+    :param input_file: What file to read and write. This should be the relevant stocks list.
+    :return:
+    """
 
     # Load the DataFrame
     df = pd.read_excel(input_file, sheet_name='Stocks')
@@ -156,9 +160,8 @@ def main():
     finally:
         driver.quit()
 
-        df.to_excel(output_file, sheet_name='Stocks', index=False)
-        # df.to_excel(f"{output_file[:output_file.rfind(".")]}backup.xlsx", sheet_name='Stocks', index=False)
+        df.to_excel(input_file, sheet_name='Stocks', index=False)
 
 
 if __name__ == "__main__":
-    main()
+    scrape_all_stocks()
